@@ -45,6 +45,8 @@ Este projeto foi idealizado e desenvolvido pela [Rocketseat](https://rocketseat.
   - É **necessário** possuir o **[Git](https://git-scm.com/)** instalado e configurado no computador
   - É **necessário** ter o gerenciador de pacotes **[Yarn](https://yarnpkg.com/)** instalado ou o **[NPM](https://www.npmjs.com/)**.
 
+- ### Configurando o Firebase
+    
 - ### Executando o App
 
   ```bash
@@ -58,12 +60,13 @@ Este projeto foi idealizado e desenvolvido pela [Rocketseat](https://rocketseat.
 
   # Instale as dependências
   $ yarn install
+    
+  # Crie um arquivo .env.local no diretório raiz do projeto;
+  # Copie as variaveis do arquivo .env.example e cole no .env.local e preencha as informações com os dados obtidos na configuração do Firebase
 
   # Rode o app
   $ yarn start
   ```
-
-- ### Configurando o Firebase
 
 <br>
 
