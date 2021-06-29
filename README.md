@@ -44,7 +44,7 @@ Este projeto foi idealizado e desenvolvido pela [Rocketseat](https://rocketseat.
   - É **necessário** possuir uma conta cadastrada no Github
   - É **necessário** possuir o **[Git](https://git-scm.com/)** instalado e configurado no computador
   - É **necessário** ter o gerenciador de pacotes **[Yarn](https://yarnpkg.com/)** instalado ou o **[NPM](https://www.npmjs.com/)**.
-  - É **necessário** criar e configurar um novo projeto no [Firebase](https://console.firebase.google.com/).
+  - É **necessário** criar e configurar um novo projeto no **[Firebase](https://console.firebase.google.com/)**.
 
 - ### Configurando o Firebase
     
