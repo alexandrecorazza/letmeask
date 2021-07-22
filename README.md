@@ -70,11 +70,11 @@ Este projeto foi idealizado e desenvolvido pela [Rocketseat](https://rocketseat.
 
 ## :pushpin: To-Do
 
-- [X] Dark theme
+- [x] Dark theme
 - [ ] Aplicação responsiva
 - [ ] Toasts de avisos do sistemas
 - [ ] Redirecionar usuário para a sala de admin, após login com o Google
-- [ ] Exibir nome e foto do usuário autenticado
+- [x] Exibir nome e foto do usuário autenticado
 
 ## :memo: Licença
 
