@@ -11,7 +11,11 @@ import { RoomCode } from '../components/RoomCode';
 import { useRoom } from '../hooks/useRoom';
 // import '../styles/rooms.scss'
 import styled from 'styled-components'
+import Switch from 'react-switch';
+import { DarkModeDisabled, DarkModeEnabled, BoxShadow, OnColor } from '../components/SwitchTheme';
 import { database } from '../services/firebase';
+import { useTheme } from '../hooks/useTheme';
+import { LogoImage } from '../components/LogoImage';
 
 type RoomParams = {
   id: string
@@ -22,8 +26,9 @@ export function AdminRoom() {
   const history = useHistory()
   const params = useParams<RoomParams>()
   const roomId = params.id;
-  
+
   const { title, questions } = useRoom(roomId)
+  const { theme, toggleTheme } = useTheme()
 
   async function handleEndRoom() {
     await database.ref(`rooms/${roomId}`).update({
@@ -40,21 +45,24 @@ export function AdminRoom() {
   }
 
   async function handleCheckQuestionAsAnswered(questionId: string) {
-    await database.ref(`rooms/${roomId}/questions/${questionId}`).update({ 
+    await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
       isAnswered: true,
     })
   }
 
   async function handleHighlightQuestion(questionId: string) {
-    await database.ref(`rooms/${roomId}/questions/${questionId}`).update({ 
+    await database.ref(`rooms/${roomId}/questions/${questionId}`).update({
       isHighlighted: true,
     })
   }
 
+  // O styled component inserido aqui substitui qualquer estilização que faça o uso do className
+
   const PageRoom = styled.div`
     header {
       padding: 24px;
-      border-bottom: 1px solid #e2e2e2;
+      background: ${props => props.theme.colors.header};
+      border-bottom: 1px solid ${props => props.theme.colors.borderColor};
     }
     
     main {
@@ -76,6 +84,7 @@ export function AdminRoom() {
 
     > div {
       display: flex;
+      align-items: center;
       gap: 16px;
 
       button {
@@ -92,7 +101,7 @@ export function AdminRoom() {
     h1 {
       font-family: "Poppins", sans-serif;
       font-size: 24px;
-      color: #29292e;
+      color: ${props => props.theme.colors.textColor};
     }
 
     span {
@@ -110,12 +119,21 @@ export function AdminRoom() {
   `
 
 
-  return(
+  return (
     <PageRoom>
       <header>
         <Content>
-          <img src={logoImg} alt="Letmeask" />
+          {/* <img src={logoImg} alt="Letmeask" /> */}
+          <LogoImage heightSize={120}/>
           <div>
+            <Switch
+              onChange={toggleTheme}
+              checked={theme === 'dark' ? true : false}
+              onColor={OnColor}
+              checkedIcon={<DarkModeEnabled />}
+              uncheckedIcon={<DarkModeDisabled />}
+              boxShadow={BoxShadow}
+            />
             <RoomCode code={roomId} />
             <Button isOutlined onClick={handleEndRoom}>Encerrar sala</Button>
           </div>
@@ -125,41 +143,41 @@ export function AdminRoom() {
       <main>
         <RoomTitle>
           <h1>Sala {title}</h1>
-          { questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
+          {questions.length > 0 && <span>{questions.length} pergunta(s)</span>}
         </RoomTitle>
 
         <QuestionList>
           {questions.map(question => {
-            return <Question 
+            return <Question
               key={question.id}
-              content={question.content} 
-              author={question.author} 
+              content={question.content}
+              author={question.author}
               isAnswered={question.isAnswered}
               isHighlighted={question.isHighlighted}
+            >
+              {!question.isAnswered && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleCheckQuestionAsAnswered(question.id)}
+                  >
+                    <img src={checkImg} alt="Marcar pergunta como respondida" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleHighlightQuestion(question.id)}
+                  >
+                    <img src={answerImg} alt="Dar destaque à pergunta" />
+                  </button>
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => handleDeleteQuestion(question.id)}
               >
-                { !question.isAnswered && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleCheckQuestionAsAnswered(question.id)}
-                    >
-                      <img src={checkImg} alt="Marcar pergunta como respondida" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleHighlightQuestion(question.id)}
-                    >
-                      <img src={answerImg} alt="Dar destaque à pergunta" />
-                    </button>
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleDeleteQuestion(question.id)}
-                >
-                  <img src={deleteImg} alt="Remover pergunta" />
-                </button>
-              </Question>
+                <img src={deleteImg} alt="Remover pergunta" />
+              </button>
+            </Question>
           })}
         </QuestionList>
       </main>

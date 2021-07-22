@@ -2,6 +2,7 @@ import { useHistory } from 'react-router-dom';
 
 import illustrationImg from '../assets/images/illustration.svg'
 import logoImg from '../assets/images/logo.svg'
+import { LogoImage } from '../components/LogoImage';
 import googleIconImg from '../assets/images/google-icon.svg'
 
 import { database } from '../services/firebase';
@@ -11,41 +12,47 @@ import { useAuth } from '../hooks/useAuth';
 import { FormEvent, useState } from 'react';
 // import '../styles/auth.scss';
 import styled from 'styled-components'
+import Switch from 'react-switch';
+import { useTheme } from '../hooks/useTheme';
+import { BoxShadow, DarkModeDisabled, DarkModeEnabled, OnColor } from '../components/SwitchTheme';
 
 export function Home() {
   const history = useHistory()
   const { user, signInWithGoogle } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const [roomCode, setRoomCode] = useState('')
 
   async function handleCreateRoom() {
-    if(!user) {
+    if (!user) {
       await signInWithGoogle()
     }
-    
+
     history.push('/rooms/new')
   }
 
   async function handleJoinRoom(event: FormEvent) {
     event.preventDefault()
 
-    if(roomCode.trim() === '') {
+    if (roomCode.trim() === '') {
       return
     }
 
     const roomRef = await database.ref(`rooms/${roomCode}`).get()
 
-    if(!roomRef.exists()) {
+    if (!roomRef.exists()) {
       alert('Room does not exists.');
       return
     }
 
-    if(roomRef.val().endedAt) {
+    if (roomRef.val().endedAt) {
       alert('Room already closed.')
       return
     }
 
     history.push(`/rooms/${roomCode}`);
   }
+
+  // O styled component inserido aqui substitui qualquer estilização que faça o uso do className.
 
   const PageAuth = styled.div`
     display: flex;
@@ -87,8 +94,14 @@ export function Home() {
       padding: 0 32px;
     
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+
+      .switch {
+        position: absolute;
+        top: 110px;
+      }
     } 
   `
   const MainContent = styled.div`
@@ -99,9 +112,9 @@ export function Home() {
     align-items: stretch;
     text-align: center;
   
-    > img {
-      align-self: center;
-    }
+    // > img {
+    //   align-self: center;
+    // }
   
     h2 {
       font-size: 24px;
@@ -114,8 +127,8 @@ export function Home() {
         height: 50px;
         border-radius: 8px;
         padding: 0 16px;
-        background: #fff;
-        border: 1px solid #a8a8b3;
+        background: ${props => props.theme.colors.backgroundField};
+        border: 1px solid ${props => props.theme.colors.borderColor};
       }
   
       button {
@@ -125,16 +138,6 @@ export function Home() {
       button,
       input {
         width: 100%;
-      }
-    }
-  
-    p {
-      font-size: 14px;
-      color: #737380;
-      margin-top: 16px;
-  
-      a {
-        color: #e559f9;
       }
     }
   `
@@ -189,8 +192,6 @@ export function Home() {
     }
   `
 
-
-
   return (
     <PageAuth>
       <aside>
@@ -203,7 +204,8 @@ export function Home() {
 
       <main>
         <MainContent>
-          <img src={logoImg} alt="Letmeask" />
+          {/* <img src={logoImg} alt="Letmeask" /> */}
+          <LogoImage/>
           <CreateRoom onClick={handleCreateRoom}>
             <img src={googleIconImg} alt="Logo do Google" />
             Crie sua sala com o Google
@@ -212,8 +214,8 @@ export function Home() {
           <Separator>ou entre em uma sala</Separator>
 
           <form onSubmit={handleJoinRoom}>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Digite o código da sala"
               onChange={event => setRoomCode(event.target.value)}
               value={roomCode}
@@ -223,6 +225,15 @@ export function Home() {
             </Button>
           </form>
         </MainContent>
+        <Switch
+          onChange={toggleTheme}
+          checked={theme === 'dark' ? true : false}
+          className="switch"
+          onColor={OnColor}
+          checkedIcon={<DarkModeEnabled/>}
+          uncheckedIcon={<DarkModeDisabled/>}
+          boxShadow={BoxShadow}
+        />
       </main>
     </PageAuth>
   )
