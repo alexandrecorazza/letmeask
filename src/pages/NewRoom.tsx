@@ -86,7 +86,7 @@ export function NewRoom() {
 
       .switch {
         position: absolute;
-        top: 110px;
+        top: 80px;
       }
     }
   
@@ -98,10 +98,28 @@ export function NewRoom() {
       align-items: stretch;
       text-align: center;
   
-      > img {
-        align-self: center;
+      
+      div {
+        
+        margin-top: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        > img {
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+        }
+        
+        h3 {
+          color: ${props => props.theme.colors.textColor};
+          font-family: 'Poppins', sans-serif;
+        }
+    
       }
-  
+      
       h2 {
         font-size: 24px;
         margin: 64px 0 24px;
@@ -153,6 +171,10 @@ export function NewRoom() {
         <div className="main-content">
           {/* <img src={logoImg} alt="Letmeask" /> */}
           <LogoImage/>
+          <div>
+            <img src={user?.avatar} alt="Avatar" />
+            <h3>Olá, {user?.name}...</h3>
+          </div>
           <h2>Criar uma nova sala</h2>
 
           <form onSubmit={handleCreateRoom}>
